@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 class Resume:
-    'class for parsed resume data'
 
     #resume converted into plain text
     plain_text = ""
@@ -30,19 +29,20 @@ class Resume:
     skill_s = set()
     #set of language knoweledges
     lang = set()
-    
-    '''
+
+        
+    """
     c'tor
     init values for data acquired from simple resume scan
-    '''
+    """
     def __init__(self, text, words):
         self.plain_text = text #unicode(text, 'utf8')
         self.word_list = words[:] #slicing for deep copy
         
 
-    '''
+    """
     string of list objects
-    '''
+    """
     def listToString(self, lst):
         s = ""
         if(len(lst) == 1):
@@ -55,9 +55,9 @@ class Resume:
             return s
 
 
-    '''
+    """
     print set data
-    '''
+    """
     def setToString(self, st):
         s = ""
         if(len(st) == 1):
@@ -70,9 +70,9 @@ class Resume:
             return s
         
 
-    '''
+    """
     string of object data
-    '''
+    """
     def toString(self):
 	#default response
         d = "Not Found"      

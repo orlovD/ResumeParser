@@ -30,6 +30,7 @@ class FileReader:
     #list with text from read files
     text_list = []
 
+
     """
     c'tor
     set path to files and extension

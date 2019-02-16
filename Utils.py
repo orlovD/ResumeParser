@@ -23,7 +23,6 @@ def loadFromFile(path, delimiter=None):
     return words
     
 
-
 """
 write text data to file at the given path
 """

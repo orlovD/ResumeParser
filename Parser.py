@@ -23,6 +23,7 @@ class Parser:
     dictionary = None
     #list of resumes for parsing
     resume_list = []
+
     
     """
     c'tor
@@ -32,10 +33,11 @@ class Parser:
         print "Created new instanse of Parser\n"
         #load dictionary data
         self.dictionary = Dictionary()     
+
     
-    '''
+    """
     check resume for useful data based on assumed format
-    '''
+    """
     def formatMatchHeName(self, index):
         resume = self.resume_list[index]
         #print resume.plain_text
@@ -231,7 +233,8 @@ class Parser:
         text = resume.plain_text
         
         e_mails = re.findall(r'[\w\.-]+@[\w\.-]+', text)
-        resume.e_mail = e_mails
+
+        resume.e_mail = e_mails[:]
 
 
     """
@@ -242,15 +245,23 @@ class Parser:
         text = resume.plain_text
         dictionary = self.dictionary.skill_hard_eng
 
+        skill_lst = []
         for skill in dictionary:
             s1 = " " + skill.lower() + " "
             s2 = " " + skill.lower() + ","
-            if((text.lower().find(s1) != -1) or (text.lower().find(s2) != -1)):
+            s3 = " " + skill.lower() + "/"
+            s4 = "/" + skill.lower() + " "
+            s5 = "/" + skill.lower() + "/"
+            
+            txt_lwr = text.lower()
+            if((txt_lwr.find(s1) != -1) or (txt_lwr.find(s2) != -1) or (txt_lwr.find(s3) != -1) or (txt_lwr.find(s4) != -1) or (txt_lwr.find(s5) != -1)):
                 if(len(skill) == 1):
                     skill = skill[0].upper()
                 elif(len(skill) >= 1):
                     skill = skill[0].upper() + skill[1:]
-                self.resume_list[index].skill_h.add(skill)
+                skill_lst.append(skill)
+                    
+        resume.skill_h = skill_lst[:]
     
     
     """
@@ -260,16 +271,24 @@ class Parser:
         resume = self.resume_list[index]
         text = resume.plain_text
         dictionary = self.dictionary.skill_soft_eng
-        
+
+        skill_lst = []
         for skill in dictionary:
             s1 = " " + skill.lower() + " "
             s2 = " " + skill.lower() + ","
-            if((text.lower().find(s1) != -1) or (text.lower().find(s2) != -1)):
+            s3 = " " + skill.lower() + "/"
+            s4 = "/" + skill.lower() + " "
+            s5 = "/" + skill.lower() + "/"
+            
+            txt_lwr = text.lower()
+            if((txt_lwr.find(s1) != -1) or (txt_lwr.find(s2) != -1) or (txt_lwr.find(s3) != -1) or (txt_lwr.find(s4) != -1) or (txt_lwr.find(s5) != -1)):
                 if(len(skill) == 1):
                     skill = skill[0].upper()
                 elif(len(skill) >= 1):
                     skill = skill[0].upper() + skill[1:]
-                resume.skill_s.add(skill)
+                skill_lst.append(skill)
+
+        resume.skill_s = skill_lst[:]
 
     """
     create list of languages
@@ -278,12 +297,20 @@ class Parser:
         resume = self.resume_list[index]
         text = resume.plain_text
         dictionary = self.dictionary.language_eng
-        
+
+        lang_lst = []
         for language in dictionary:
             s1 = " " + language.lower() + " "
             s2 = " " + language.lower() + ","
-            if((text.lower().find(s1) != -1) or (text.lower().find(s2) != -1)):
-                resume.lang.add(language) 
+            s3 = " " + language.lower() + "/"
+            s4 = "/" + language.lower() + " "
+            s5 = "/" + language.lower() + "/"
+            
+            txt_lwr = text.lower()
+            if((txt_lwr.find(s1) != -1) or (txt_lwr.find(s2) != -1) or (txt_lwr.find(s3) != -1) or (txt_lwr.find(s4) != -1) or (txt_lwr.find(s5) != -1)):
+                lang_lst.append(language)
+
+        resume.lang = lang_lst[:]
 
 
     """

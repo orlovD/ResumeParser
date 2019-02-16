@@ -58,8 +58,8 @@ class Dictionary(object):
                 self.skill_hard_eng     = loadFromFile(SKILL_HARD_ENG_DICT, '\n')
                 self.skill_soft_he      = loadFromFile(SKILL_SOFT_HE_DICT, '\n')
                 self.skill_soft_eng     = loadFromFile(SKILL_SOFT_ENG_DICT, '\n')
-                self.languages_he       = loadFromFile(LANGUAGES_HE_DICT, '\n')
-                self.languages_eng      = loadFromFile(LANGUAGES_ENG_DICT, '\n')
+                self.language_he       = loadFromFile(LANGUAGES_HE_DICT, '\n')
+                self.language_eng      = loadFromFile(LANGUAGES_ENG_DICT, '\n')
                 print "Finished loading dictionaries.\n"
 
 
