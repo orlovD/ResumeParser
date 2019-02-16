@@ -83,14 +83,3 @@ class FileReader:
             #create string
             data = '\n\n'.join(paragraphs)
             self.text_list.append(data)
-  
-
-    """
-    save string data as a text file
-    """
-    @staticmethod
-    def docToTxt(file_name, data):
-        print "Saving file " + file_name + ".txt file..."
-        f = open('file_name', 'w')
-        f.write(data.encode('utf8'))
-        f.close()

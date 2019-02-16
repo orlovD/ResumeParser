@@ -3,6 +3,8 @@
 
 import io
 
+from Utils import *
+
 #global wars for paths to the .txt files
 #based on http://www.itim.org.il/%D7%9E%D7%90%D7%92%D7%A8-%D7%A9%D7%9E%D7%95%D7%AA/
 NAME_HE_DICT = "dictionaries/namesHE.txt"
@@ -19,60 +21,61 @@ SKILL_HARD_HE_DICT = "dictionaries/skillsHARDhe.txt"
 SKILL_HARD_ENG_DICT = "dictionaries/skillsHARDeng.txt"
 SKILL_SOFT_HE_DICT = "dictionaries/skillsSOFThe.txt"
 SKILL_SOFT_ENG_DICT = "dictionaries/skillsSOFTeng.txt"
-LANGUAGES = "dictionaries/languages.txt"
+LANGUAGES_HE_DICT = "dictionaries/languagesHE.txt"
+LANGUAGES_ENG_DICT = "dictionaries/languagesENG.txt"
         
 class Dictionary(object):
 
-        #fields
-        namesHE = set()
-        namesENG = set()
-        surnamesHE = set()
-        surnamesENG = set()
-        citiesHE = set()
-        citiesENG = set()
-        countriesHE = set()
-        countriesENG = set()
-        skillsHARDhe = set()
-        skillsHARDeng = set()
-        skillsSOFThe = set()
-        skillsSOFTeng = set()
-        languages = set()
+        #basic dictionaries for lookup
+        name_he         = set()
+        name_eng        = set()
+        surname_he      = set()
+        surname_eng     = set()
+        city_he         = set()
+        city_eng        = set()
+        country_he      = set()
+        country_eng     = set()
+        skill_hard_he   = set()
+        skill_hard_eng  = set()
+        skill_soft_he   = set()
+        skill_soft_eng  = set()
+        language_he     = set()
+        language_eng    = set()
         
-        """
-        load data from file into set
-        """
-        @staticmethod
-        def loadFromFile(path):
-                print "Loading data from " + path + "..."
-                f = io.open(path, 'r', encoding='utf-8').read()
-                #create new set with data from file
-                return set(f.split())
-        """
-        load data from file into set line by line
-        """
-        @staticmethod
-        def loadFromFileByLine(path):
-                print "Loading data from " + path + "..."
-                f = io.open(path, 'r', encoding='utf-8').read()
-                #create new set with data from file
-                return set(f.split('\n'))
 
         """
         c'tor
         fills the dictionaries from files
         """
         def __init__(self):
-                self.namesHE = Dictionary.loadFromFile(NAME_HE_DICT)
-                self.namesENG = Dictionary.loadFromFile(NAME_ENG_DICT)
-                self.surnamesHE = Dictionary.loadFromFile(SURNAME_HE_DICT)
-                self.surnamesENG = Dictionary.loadFromFile(SURNAME_ENG_DICT)
-                self.citiesHE = Dictionary.loadFromFile(CITY_HE_DICT)
-                self.citiesENG = Dictionary.loadFromFile(CITY_ENG_DICT)
-                self.countriesHE = Dictionary.loadFromFile(COUNTRY_HE_DICT)
-                self.countriesENG = Dictionary.loadFromFile(COUNTRY_ENG_DICT)
-                self.skillsHARDhe = Dictionary.loadFromFileByLine(SKILL_HARD_HE_DICT)
-                self.skillsHARDeng = Dictionary.loadFromFileByLine(SKILL_HARD_ENG_DICT)
-                self.skillsSOFThe = Dictionary.loadFromFileByLine(SKILL_SOFT_HE_DICT)
-                self.skillsSOFTeng = Dictionary.loadFromFileByLine(SKILL_SOFT_ENG_DICT)
-                self.languages = Dictionary.loadFromFileByLine(LANGUAGES)
-                print "Finished loading dictionaries\n"
+                self.name_he            = loadFromFile(NAME_HE_DICT)
+                self.name_eng           = loadFromFile(NAME_ENG_DICT)
+                self.surname_he         = loadFromFile(SURNAME_HE_DICT)
+                self.surname_eng        = loadFromFile(SURNAME_ENG_DICT)
+                self.city_he            = loadFromFile(CITY_HE_DICT)
+                self.city_eng           = loadFromFile(CITY_ENG_DICT)
+                self.country_he         = loadFromFile(COUNTRY_HE_DICT)
+                self.country_eng        = loadFromFile(COUNTRY_ENG_DICT)
+                self.skill_hard_he      = loadFromFile(SKILL_HARD_HE_DICT, '\n')
+                self.skill_hard_eng     = loadFromFile(SKILL_HARD_ENG_DICT, '\n')
+                self.skill_soft_he      = loadFromFile(SKILL_SOFT_HE_DICT, '\n')
+                self.skill_soft_eng     = loadFromFile(SKILL_SOFT_ENG_DICT, '\n')
+                self.languages_he       = loadFromFile(LANGUAGES_HE_DICT, '\n')
+                self.languages_eng      = loadFromFile(LANGUAGES_ENG_DICT, '\n')
+                print "Finished loading dictionaries.\n"
+
+
+        """
+        add new word into dictionary
+        """
+        def addWord(self, dict_name, word):
+                if(word not in getattr(self, dict_name)):
+                        #add word into dictionary object
+                        getattr(self, dict_name).add(word)
+                        print "Adding new word '" + word + "' into dictionary..."
+                        #update dictionary file
+                        path = globals()[dict_name.upper() + "_DICT"]
+                        addToFile(path, word)
+                        
+                
+                

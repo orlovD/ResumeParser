@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from string import punctuation
 import re
 
 from Dictionary import Dictionary
 from FileReader import FileReader
 from Resume import Resume
+from Utils import *
 
 #global vars for file reading
 PATH = "files/"
@@ -15,6 +15,7 @@ EXTENSION = ".doc"
 #global vars for different types of spaces
 SPACE = 32
 NO_BREAK_SPACE = 160
+TAB = 9
 
 class Parser:
     
@@ -28,55 +29,37 @@ class Parser:
     init Dictionary object
     """
     def __init__(self):
-        print "New Instanse of Parser is Created\n"
+        print "Created new instanse of Parser\n"
         #load dictionary data
-        self.dictionary = Dictionary()
-
-        
-    """
-    create list of words from text string
-    """
-    @staticmethod
-    def splitTextIntoList(text):
-        #list of words created from provided text
-        words = []
-        words = text.replace(':',' ').replace(';',' ').replace(',',' ').replace('\t',' ').replace('\/',' ').replace('\\',' ').replace('(',' ').replace(')',' ').split()
-        for idx in range(0, len(words)):
-            words[idx] = ''.join(words[idx].split())
-            words[idx] = words[idx].strip(punctuation)
-        return words   
-        
+        self.dictionary = Dictionary()     
     
     '''
     check resume for useful data based on assumed format
     '''
     def formatMatchHeName(self, index):
-        #print self.resume_list[index].plain_text
+        resume = self.resume_list[index]
+        #print resume.plain_text
         word = "שם:"
-        word = unicode(word, 'utf8')
+        word = unicode(word, 'utf-8')
         #debug
         #print word
         w_len = len(word)
-        #debug
-        #print self.plain_text
-        #self.plain_text = unicode(self.plain_text, 'utf8')
-        idx = self.resume_list[index].plain_text.find(word)
+        idx = resume.plain_text.find(word)
         if(idx == -1):
             #search for match w/o ':'
             w_len -= 1
-            idx = self.resume_list[index].plain_text.find(word[:len(word) - 1])
+            idx = resume.plain_text.find(word[:len(word) - 1])
             #debug
             #print word[:len(word) - 1]        
         else:
             #debug
-            #print "======!!!!!======"
             #print "Found word " + word + " via Word Lookup"
  
             #take text till first tab or till new line as name
-            end = self.resume_list[index].plain_text.find('\t', idx + w_len)
+            end = resume.plain_text.find('\t', idx + w_len)
             if(end == -1):
-                end = self.resume_list[index].plain_text.find('\n', idx + w_len)
-            line = self.resume_list[index].plain_text[idx + len(word):end]
+                end = resume.plain_text.find('\n', idx + w_len)
+            line = resume.plain_text[idx + len(word):end]
             
             #strip whitespace from both ends
             line = line.strip()
@@ -91,13 +74,21 @@ class Parser:
             for i in range(1, len(line)):
                 #debug
                 #print ord(line[i])
-                if( (ord(line[i]) == SPACE and (ord(line[i - 1]) == NO_BREAK_SPACE)) or (ord(line[i]) == NO_BREAK_SPACE and (ord(line[i - 1]) == SPACE)) or (ord(line[i]) == SPACE and (ord(line[i - 1]) == SPACE)) or (ord(line[i]) == NO_BREAK_SPACE and (ord(line[i - 1]) == NO_BREAK_SPACE)) or (line[i] == '\t')) :
+                if( (ord(line[i]) == SPACE and (ord(line[i - 1]) == NO_BREAK_SPACE)) or (ord(line[i]) == NO_BREAK_SPACE and (ord(line[i - 1]) == SPACE)) or (ord(line[i]) == SPACE and (ord(line[i - 1]) == SPACE)) or (ord(line[i]) == NO_BREAK_SPACE and (ord(line[i - 1]) == NO_BREAK_SPACE)) or (ord(line[i]) == TAB)) :
                     end = i - 1
                     break
 
-            #print end
-            #print line[:end]
-            #print len(line[:end])
+            #self-updating feature
+            #if found first name is not in the Dictionary of hebrew names - add it
+            first_name = None
+            for i in range(1, len(line)):
+                if((ord(line[i]) == SPACE) or (ord(line[i]) == NO_BREAK_SPACE) or (ord(line[i]) == TAB)):
+                    first_name = line[:i]
+                    #debug
+                    #print first_name
+                    break
+            if(first_name != None):
+                self.dictionary.addWord("name_he", first_name)
             
             self.resume_list[index].name = line[:end]
             return True
@@ -113,7 +104,7 @@ class Parser:
         for idx in range(0, len(resume.word_list)):
             #debug
             #print "checking " + resume.word_list[idx] + " in the dict of names"
-            if resume.word_list[idx] in self.dictionary.namesHE:
+            if resume.word_list[idx] in self.dictionary.name_he:
                 #debug
                 #print "word " + resume.word_list[idx] + " is found in the dict"
                 #check if its not part of the CV heading
@@ -121,7 +112,7 @@ class Parser:
                     #debug
                     #print "Prev word is: " + resume.word_list[idx - 1]
                     word = "קורות"
-                    word = unicode(word, 'utf8')
+                    word = unicode(word, 'utf-8')
                     if(resume.word_list[idx - 1] != word):
                         if(resume.word_list[idx + 1][0:4].isnumeric() == False):
                             name = resume.word_list[idx] + " " + resume.word_list[idx + 1]
@@ -146,7 +137,7 @@ class Parser:
         for idx in range(0, len(resume.word_list)):
             #debug
             #print "Checking " + resume.word_list[idx] + " in the dict of names"
-            if resume.word_list[idx] in self.dictionary.namesENG:
+            if resume.word_list[idx] in self.dictionary.name_eng:
                 #debug
                 #print "Word " + word_list[idx] + " is found in the dict"
                 if(resume.word_list[idx + 1][0:4].isnumeric() == False):
@@ -249,7 +240,7 @@ class Parser:
     def findHardSkills(self, index):
         resume = self.resume_list[index]
         text = resume.plain_text
-        dictionary = self.dictionary.skillsHARDeng
+        dictionary = self.dictionary.skill_hard_eng
 
         for skill in dictionary:
             s1 = " " + skill.lower() + " "
@@ -268,7 +259,7 @@ class Parser:
     def findSoftSkills(self, index):
         resume = self.resume_list[index]
         text = resume.plain_text
-        dictionary = self.dictionary.skillsSOFTeng
+        dictionary = self.dictionary.skill_soft_eng
         
         for skill in dictionary:
             s1 = " " + skill.lower() + " "
@@ -286,7 +277,7 @@ class Parser:
     def findLanguages(self, index):
         resume = self.resume_list[index]
         text = resume.plain_text
-        dictionary = self.dictionary.languages
+        dictionary = self.dictionary.language_eng
         
         for language in dictionary:
             s1 = " " + language.lower() + " "
@@ -313,7 +304,7 @@ class Parser:
             #debug
             #print text
             #text = file_reader.docToText(f)
-            word_list = self.splitTextIntoList(text)
+            word_list = splitTextIntoList(text)
             resume = Resume(text, word_list)
             #add resume to parser's list of resumes
             self.resume_list.append(resume)
