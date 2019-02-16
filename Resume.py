@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import codecs
-import regex
-#import os
-
 class Resume:
     'class for parsed resume data'
 

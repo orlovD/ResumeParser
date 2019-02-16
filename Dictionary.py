@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import io
-
 from Utils import *
 
 #global wars for paths to the .txt files
